@@ -19,6 +19,24 @@ class App extends Component {
       winHandler: null,
       history: [],
       timestamp: 1,
+      initialCash: 500,
+      autoBetCurve: [
+        0,
+        0,
+        0,
+        1,
+        2,
+        4,
+        8,
+        17,
+        36,
+        76,
+        162,
+        50,
+        50,
+        50,
+        50,
+      ],
     };
   }
 
@@ -101,17 +119,23 @@ class App extends Component {
   };
 
   handleBet = (position, amount) => {
-    if (this.state.betHandler(amount)) {
-      this.setState(prevState => {
-        return {
-          bets: {
-            ...prevState.bets,
-            [position.Enum]:
-              (prevState.bets[position.Enum] || 0) + amount,
-          },
-        };
+    this.state
+      .betHandler(amount)
+      .then(() => {
+        this.setState(prevState => {
+          return {
+            bets: {
+              ...prevState.bets,
+              [position.Enum]:
+                (prevState.bets[position.Enum] || 0) +
+                amount,
+            },
+          };
+        });
+      })
+      .catch(() => {
+        //else not enough cash
       });
-    } //else not enough cash
   };
 
   registerBetHandler = handler => {
@@ -169,6 +193,7 @@ class App extends Component {
           history={this.state.history}
           onBatchBet={this.batchBet}
           spin={this.state.spinHandler}
+          autoBetCurve={this.state.autoBetCurve}
         />
         <History
           bets={this.state.bets}
@@ -184,6 +209,7 @@ class App extends Component {
           onResult={this.registerWinHandler}
           windowHeight={windowHeight}
           windowWidth={windowWidth}
+          initialCash={this.state.initialCash}
         />
       </div>
     );

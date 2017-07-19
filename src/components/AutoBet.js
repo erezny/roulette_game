@@ -8,8 +8,15 @@ export default class AutoBet extends Component {
     super(props);
 
     this.state = {
-      curve: [0, 0, 1, 1, 2, 3, 5, 8],
+      curve: props.autoBetCurve,
     };
+
+    this.interval = setInterval(this.handleOnClick, 5000);
+  }
+  componentWillReceiveProps(props) {
+    this.setState({
+      curve: props.autoBetCurve,
+    });
   }
 
   curve = index => {
@@ -47,51 +54,54 @@ export default class AutoBet extends Component {
     }
     console.log({ batchBets });
     this.props.onBatchBet(batchBets);
-    setImmediate(this.props.spin);
+    setTimeout(this.props.spin, 1000);
   };
 
-  positionHistory(position, history) {
-    let positionHistory = [];
-    for (let historyEntry of history) {
-      positionHistory.push({
-        bet: historyEntry.bets[position.Enum] || 0,
-        win: position.Includes.reduce((win, p) => {
-          if (p.Enum == historyEntry.winningNumber.Enum) {
-            return win + 1;
-          } else {
-            return win + 0;
-          }
-        }, 0),
-      });
-    }
-    return positionHistory;
-  }
+  positionOffset = position => {
+    return 0 - position.Payout * position.Payout;
+  };
 
-  winDistanceLastBet = position => {
-    return this.positionHistory(
-      position,
-      this.props.history
-    ).reduce(
-      (acc, position) => {
-        if (position.bet > 0) {
-          acc.lastBet = position.bet;
-        }
-        if (position.win) {
-          acc.winDistance = 0;
+  winDistance = position => {
+    let winDistance = 0;
+    winDistance += this.positionOffset(position);
+
+    let historyLast = this.props.history.length - 1;
+    for (let i = historyLast; i >= 0; i -= 1) {
+      let historyEntry = this.props.history[i];
+      let win = position.Includes.reduce((w, p) => {
+        if (p.Enum === historyEntry.winningNumber.Enum) {
+          return w + 1;
+        } else if (p.Enum === historyEntry.winning) {
+          return w + 1;
         } else {
-          acc.winDistance += 1;
+          return w + 0;
         }
-        return acc;
-      },
-      { winDistance: 0, lastBet: 0 }
-    );
+      }, 0);
+      if (win == 0) {
+        winDistance += 1;
+      } else {
+        console.log('win distance', {
+          position,
+          winDistance,
+        });
+        return winDistance;
+      }
+    }
+    console.log('winDistanceDefault', {
+      winDistance,
+      historyLast,
+    });
+    return winDistance;
   };
 
   betForPosition = position => {
-    let { winDistance, lastBet } = this.winDistanceLastBet(
-      position
-    ); // 0 = won most recenlty
+    let winDistance = this.winDistance(position); // 0 = won most recenlty
     let nextBet = this.curve(winDistance);
+    console.log('betForPosition', {
+      position,
+      winDistance,
+      nextBet,
+    });
     return nextBet;
   };
 

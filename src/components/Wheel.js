@@ -33,7 +33,6 @@ export default class Wheel extends Component {
 
   numberFromEnum(Enum) {
     for (let key of Object.keys(Bets.Numbers)) {
-      console.log({ key });
       if (Bets.Numbers[key].Enum === Enum) {
         return Bets.Numbers[key];
       }

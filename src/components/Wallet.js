@@ -6,60 +6,35 @@ export default class Wallet extends Component {
     super(props);
 
     this.state = {
-      cash: 100,
+      cash: props.initialCash,
       onTable: 0,
-      childHandlers: {
-        handleBet: null,
-        handleResult: null,
-      },
     };
 
-    this.props.onBet(this.handleBet);
-    this.props.onResult(this.handleResult);
+    props.onBet(this.handleBet);
+    props.onResult(this.handleResult);
   }
 
   handleBet = bet => {
-    if (this.state.cash < bet) {
-      return false;
-    } else {
-      this.setState({
-        cash: this.state.cash - bet,
-        onTable: this.state.onTable + bet,
+    return new Promise((resolve, reject) => {
+      this.setState(prevState => {
+        if (prevState.cash < bet) {
+          reject();
+          return null;
+        } else {
+          resolve();
+          return {
+            cash: prevState.cash - bet,
+            onTable: prevState.onTable + bet,
+          };
+        }
       });
-      return true;
-    }
-    this.state.handleBet(bet);
+    });
   };
 
   handleResult = winnings => {
     this.setState({
       cash: this.state.cash + (winnings || 0),
       onTable: 0,
-    });
-    if (this.state.handleResult) {
-      this.state.handleResult(winnings);
-    }
-  };
-
-  registerHandleBet = childOnBet => {
-    this.setState(prevState => {
-      return {
-        childHandlers: {
-          handleBet: childOnBet,
-          handleResult: prevState.handleResult,
-        },
-      };
-    });
-  };
-
-  registerHandleResult = childOnResult => {
-    this.setState(prevState => {
-      return {
-        childHandlers: {
-          ehandleBet: prevState.handleBet,
-          handleResult: childOnResult,
-        },
-      };
     });
   };
 
@@ -74,8 +49,6 @@ export default class Wallet extends Component {
         </div>
         <Cash
           count={this.state.cash}
-          onBet={this.registerHandleBet}
-          onResult={this.registerHandleResult}
           windowHeight={this.props.windowHeight}
           windowWidth={this.props.windowWidth}
         >
@@ -94,14 +67,7 @@ class Cash extends Component {
     super(props);
 
     this.state = {};
-
-    this.props.onBet(this.handleBet);
-    this.props.onResult(this.handleResult);
   }
-
-  handleBet = () => {};
-
-  handleResult = () => {};
 
   render() {
     let coins = [];
