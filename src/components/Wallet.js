@@ -96,15 +96,8 @@ class Coin extends Component {
   constructor(props) {
     super(props);
 
-    let { left, top } = this.positionFromProps(props);
     this.state = {
-      style: {
-        width: '.1em',
-        height: '.5em',
-        left: left,
-        top: top,
-        border: 'solid brown',
-      },
+      style: this.styleFromProps(props),
     };
   }
 
@@ -121,23 +114,27 @@ class Coin extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.style !== this.state.style) {
-      this.styleFromProps(newProps);
+      this.setStyleFromProps(newProps);
     }
   }
 
+  setStyleFromProps = props => {
+    this.setState({
+      style: this.styleFromProps(props),
+    });
+  };
+
   styleFromProps(props) {
     let { left, top } = this.positionFromProps(props);
-    this.setState(prevState => {
-      return {
-        style: {
-          width: '.5m',
-          height: '2em',
-          left: left,
-          top: top,
-          border: 'solid brown',
-        },
-      };
-    });
+    return {
+      style: {
+        width: '.5m',
+        height: '2em',
+        left: left,
+        top: top,
+        border: 'solid brown',
+      },
+    };
   }
 
   render() {

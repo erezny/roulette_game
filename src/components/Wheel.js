@@ -45,7 +45,10 @@ export default class Wheel extends Component {
         className={`${this.props.className} clickable`}
         onClick={this.spin}
       >
-        {this.state.randomNumber}
+        <div>
+          {this.state.randomNumber}
+        </div>
+        <div>Spin</div>
       </div>
     );
   }
