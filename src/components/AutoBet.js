@@ -11,7 +11,7 @@ export default class AutoBet extends Component {
       curve: props.autoBetCurve,
     };
 
-    this.interval = setInterval(this.handleOnClick, 5000);
+    // this.interval = setInterval(this.handleOnClick, 5000);
   }
   componentWillReceiveProps(props) {
     this.setState({
@@ -25,12 +25,6 @@ export default class AutoBet extends Component {
     if (length <= index) {
       var nextNum = curve[length - 1] + curve[length - 2];
       curve = [...curve, nextNum];
-      console.log('calc next', {
-        index,
-        nextNum,
-        curve,
-        length,
-      });
       this.setState({
         curve: curve,
       });
@@ -52,7 +46,6 @@ export default class AutoBet extends Component {
         });
       }
     }
-    console.log({ batchBets });
     this.props.onBatchBet(batchBets);
     setTimeout(this.props.spin, 1000);
   };
@@ -80,28 +73,15 @@ export default class AutoBet extends Component {
       if (win == 0) {
         winDistance += 1;
       } else {
-        console.log('win distance', {
-          position,
-          winDistance,
-        });
         return winDistance;
       }
     }
-    console.log('winDistanceDefault', {
-      winDistance,
-      historyLast,
-    });
     return winDistance;
   };
 
   betForPosition = position => {
     let winDistance = this.winDistance(position); // 0 = won most recenlty
     let nextBet = this.curve(winDistance);
-    console.log('betForPosition', {
-      position,
-      winDistance,
-      nextBet,
-    });
     return nextBet;
   };
 

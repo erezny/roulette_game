@@ -40,7 +40,9 @@ export default class History extends Component {
     }
     if (
       this.state.betValue.Includes &&
-      this.state.betValue.Includes.includes(this.props.winningNumber)
+      this.state.betValue.Includes.includes(
+        this.props.winningNumber
+      )
     ) {
       return true;
     }
@@ -73,7 +75,9 @@ export default class History extends Component {
         return (
           <td
             key={`${agg}`}
-            className={` ${winningAgg ? 'winningBet' : 'nonWinningBet'}`}
+            className={` ${winningAgg
+              ? 'winningBet'
+              : 'nonWinningBet'}`}
           >
             {round.bets[bAgg.Enum]}
           </td>
@@ -96,7 +100,6 @@ export default class History extends Component {
   }
 
   render() {
-    console.log('history', this.props);
     return (
       <div className="History">
         <div>History</div>

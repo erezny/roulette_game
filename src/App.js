@@ -54,7 +54,6 @@ class App extends Component {
         winningNumber: number,
         timestamp: prevState.timestamp,
       };
-      console.log({ historyEntry });
       return {
         number: this.numberFromEnum(Enum),
         bets: {},
@@ -108,7 +107,6 @@ class App extends Component {
         addWinningBet(betAmount, aggregate);
       }
     }
-    console.log(winningBets);
     let payout = winningBets.reduce((acc, bet) => {
       acc += bet.Amount;
       acc += bet.Amount * bet.PayoutRatio;

@@ -23,7 +23,6 @@ export default class Wheel extends Component {
       return this.spin();
     }
     const newNumber = this.numberFromEnum(newEnum);
-    console.log('spin', { newEnum, newNumber });
     this.props.onNumberChange(newEnum, newNumber);
     this.setState({
       randomNumber: newEnum,
