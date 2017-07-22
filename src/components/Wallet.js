@@ -127,13 +127,11 @@ class Coin extends Component {
   styleFromProps(props) {
     let { left, top } = this.positionFromProps(props);
     return {
-      style: {
-        width: '.5m',
-        height: '2em',
-        left: left,
-        top: top,
-        border: 'solid brown',
-      },
+      width: '.3em',
+      height: '2em',
+      left: left,
+      top: top,
+      border: 'solid brown .1em',
     };
   }
 
